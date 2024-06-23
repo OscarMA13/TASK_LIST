@@ -1,47 +1,54 @@
 import { Button, Dialog, DialogTitle, TextField } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
+import axios from 'axios'; 
 import { API_URL } from '../utils';
 
 export const UpdateTaskForm = ({
     fetchTasks,
     isDialogOpen, 
-    setIsDaialogOpen, 
-    task}) => {
-    const {id, completed} = task;
-    const [taskName,setTaskName] = useState("");
+    setIsDialogOpen, 
+    task
+}) => {
+    const { id, name, completed } = task; 
+    const [taskName, setTaskName] = useState(name); 
 
     const handleUpdateTaskName = async () => {
-        try{
+        try {
             await axios.put(API_URL, {
-                id,name:taskName,completed,
+                id,
+                name: taskName,
+                completed,
             });
 
             await fetchTasks();
             setTaskName("");
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     };
 
-
-  return <Dialog open ={isDialogOpen}>
-<DialogTitle> Edit Task </DialogTitle>
-<div className='dialog'>
-    <TextField 
-    size='small' 
-    label= "Task" 
-    variant='outlined' 
-    onChange ={(e) => setTaskName(e.target.value)}/>
-    <Button
-     variant = "contained"
-     onClick = { async () => {
-        await handleUpdateTaskName();
-        setIsDaialogOpen(false);
-     }}>
-        <CheckIcon/>
-    </Button>
-</div>
-  </Dialog>
-  
-}
+    return (
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+            <DialogTitle>Edit Task</DialogTitle>
+            <div className='dialog'>
+                <TextField
+                    size='small'
+                    label="Task"
+                    variant='outlined'
+                    value={taskName} 
+                    onChange={(e) => setTaskName(e.target.value)}
+                />
+                <Button
+                    variant="contained"
+                    onClick={async () => {
+                        await handleUpdateTaskName();
+                        setIsDialogOpen(false);
+                    }}
+                >
+                    <CheckIcon />
+                </Button>
+            </div>
+        </Dialog>
+    );
+};

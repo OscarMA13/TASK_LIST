@@ -1,9 +1,9 @@
 import { AddTaskForm } from "./components/AddTaskForm";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import {Task} from "./components/Task"
+import { Task } from "./components/Task"
 import axios from "axios";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { API_URL } from "./utils";
 
 const darkTheme = createTheme({
@@ -12,26 +12,26 @@ const darkTheme = createTheme({
   },
 });
 
-
 export default function App() {
-  const [task, settask] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const fetchTasks = async () => {
-    try{
-      const {data} = await axios.get(API_URL);
-
+    try {
+      const { data } = await axios.get(API_URL);
       setTasks(data);
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
   };
-  useEffect(() =>{
+
+  useEffect(() => {
     fetchTasks();
-  },[]); 
+  }, []);
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <AddTaskForm fetchTask = {fetchTasks}/>
-      {tasks.map((task) => <Task task={task} key={task.id} fetchTasks={fetchTasks}/>)}
+      <AddTaskForm fetchTasks={fetchTasks} />
+      {tasks.map((task) => <Task task={task} key={task.id} fetchTasks={fetchTasks} />)}
     </ThemeProvider>
   );
 }
